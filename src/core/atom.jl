@@ -35,8 +35,6 @@ Mutable representation of an individual atom in a system.
  - `molecule_idx::MaybeInt`
  - `chain_idx::MaybeInt`
  - `fragment_idx::MaybeInt`
- - `nucleotide_idx::MaybeInt`
- - `residue_idx::MaybeInt`
 
 # Constructors
 ```julia
@@ -59,8 +57,6 @@ Atom(
     molecule_idx::MaybeInt = nothing,
     chain_idx::MaybeInt = nothing,
     fragment_idx::MaybeInt = nothing,
-    nucleotide_idx::MaybeInt = nothing,
-    residue_idx::MaybeInt = nothing
 )
 ```
 Creates a new `Atom{T}` in the given atom container.
@@ -84,8 +80,6 @@ const Atom{T} = SystemComponent{T, _AtomTableRow{T}}
     molecule_idx::MaybeInt = nothing,
     chain_idx::MaybeInt = nothing,
     fragment_idx::MaybeInt = nothing,
-    nucleotide_idx::MaybeInt = nothing,
-    residue_idx::MaybeInt = nothing,
     kwargs...
 ) where T
     idx = _next_idx(sys)
@@ -94,8 +88,6 @@ const Atom{T} = SystemComponent{T, _AtomTableRow{T}}
         molecule_idx = molecule_idx,
         chain_idx = chain_idx,
         fragment_idx = fragment_idx,
-        nucleotide_idx = nucleotide_idx,
-        residue_idx = residue_idx,
         kwargs...
     )
     atom_by_idx(sys, idx)
@@ -135,8 +127,6 @@ generated using [`atoms`](@ref) or filtered from other atom tables (via `Base.fi
  - `molecule_idx::AbstractVector{MaybeInt}`
  - `chain_idx::AbstractVector{MaybeInt}`
  - `fragment_idx::AbstractVector{MaybeInt}`
- - `nucleotide_idx::AbstractVector{MaybeInt}`
- - `residue_idx::AbstractVector{MaybeInt}`
 """
 const AtomTable{T} = SystemComponentTable{T, Atom{T}}
 
@@ -166,18 +156,6 @@ end
     isnothing(atom.fragment_idx) ?
         nothing :
         fragment_by_idx(parent(atom), atom.fragment_idx)
-end
-
-@inline function parent_nucleotide(atom::Atom)
-    isnothing(atom.nucleotide_idx) ?
-        nothing :
-        nucleotide_by_idx(parent(atom), atom.nucleotide_idx)
-end
-
-@inline function parent_residue(atom::Atom)
-    isnothing(atom.residue_idx) ?
-        nothing :
-        residue_by_idx(parent(atom), atom.residue_idx)
 end
 
 """
@@ -213,8 +191,6 @@ end
     atoms(::Chain)
     atoms(::Fragment)
     atoms(::Molecule)
-    atoms(::Nucleotide)
-    atoms(::Residue)
     atoms(::System)
 
 Returns an `AtomTable{T}` containing all atoms of the given atom container.
@@ -224,8 +200,6 @@ Returns an `AtomTable{T}` containing all atoms of the given atom container.
  - `molecule_idx::Union{MaybeInt, Some{Nothing}} = nothing`
  - `chain_idx::Union{MaybeInt, Some{Nothing}} = nothing`
  - `fragment_idx::Union{MaybeInt, Some{Nothing}} = nothing`
- - `nucleotide_idx::Union{MaybeInt, Some{Nothing}} = nothing`
- - `residue_idx::Union{MaybeInt, Some{Nothing}} = nothing`
 All keyword arguments limit the results to atoms matching the given IDs. Keyword arguments set to
 `nothing` are ignored. You can use `Some(nothing)` to explicitly filter for ID values of `nothing`.
 """
@@ -233,17 +207,13 @@ All keyword arguments limit the results to atoms matching the given IDs. Keyword
     frame_id::MaybeInt = 1,
     molecule_idx::Union{MaybeInt, Some{Nothing}} = nothing,
     chain_idx::Union{MaybeInt, Some{Nothing}} = nothing,
-    fragment_idx::Union{MaybeInt, Some{Nothing}} = nothing,
-    nucleotide_idx::Union{MaybeInt, Some{Nothing}} = nothing,
-    residue_idx::Union{MaybeInt, Some{Nothing}} = nothing
+    fragment_idx::Union{MaybeInt, Some{Nothing}} = nothing
 ) where T
     _filter_atoms(atom ->
         (isnothing(frame_id)       || atom.frame_id == frame_id) &&
         (isnothing(molecule_idx)   || atom.molecule_idx == something(molecule_idx)) &&
         (isnothing(chain_idx)      || atom.chain_idx == something(chain_idx)) &&
-        (isnothing(fragment_idx)   || atom.fragment_idx == something(fragment_idx)) &&
-        (isnothing(nucleotide_idx) || atom.nucleotide_idx == something(nucleotide_idx)) &&
-        (isnothing(residue_idx)    || atom.residue_idx == something(residue_idx)),
+        (isnothing(fragment_idx)   || atom.fragment_idx == something(fragment_idx)),
         sys
     )
 end
@@ -252,8 +222,6 @@ end
     natoms(::Chain)
     natoms(::Fragment)
     natoms(::Molecule)
-    natoms(::Nucleotide)
-    natoms(::Residue)
     natoms(::System)
 
 Returns the number of atoms in the given atom container.
@@ -289,8 +257,6 @@ end
 """
     push!(::Fragment{T},   ::Atom{T})
     push!(::Molecule{T},   ::Atom{T})
-    push!(::Nucleotide{T}, ::Atom{T})
-    push!(::Residue{T},    ::Atom{T})
     push!(::System{T},     ::Atom{T})
 
 Creates a copy of the given atom in the given atom container. The new atom is automatically
@@ -303,9 +269,7 @@ See [`atoms`](@ref)
     frame_id::Int = 1,
     molecule_idx::MaybeInt = nothing,
     chain_idx::MaybeInt = nothing,
-    fragment_idx::MaybeInt = nothing,
-    nucleotide_idx::MaybeInt = nothing,
-    residue_idx::MaybeInt = nothing
+    fragment_idx::MaybeInt = nothing
 ) where T
     Atom(sys, atom.number, atom.element;
         name = atom.name,
@@ -321,9 +285,7 @@ See [`atoms`](@ref)
         frame_id = frame_id,
         molecule_idx = molecule_idx,
         chain_idx = chain_idx,
-        fragment_idx = fragment_idx,
-        nucleotide_idx = nucleotide_idx,
-        residue_idx = residue_idx
+        fragment_idx = fragment_idx
     )
     sys
 end

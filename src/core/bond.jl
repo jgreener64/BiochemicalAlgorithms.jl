@@ -126,8 +126,6 @@ end
     bonds(::Chain)
     bonds(::Fragment)
     bonds(::Molecule)
-    bonds(::Nucleotide)
-    bonds(::Residue)
     bonds(::System)
 
 Returns a `BondTable{T}` containing all bonds of the given atom container where at least one
@@ -149,8 +147,6 @@ end
     nbonds(::Chain)
     nbonds(::Fragment)
     nbonds(::Molecule)
-    nbonds(::Nucleotide)
-    nbonds(::Residue)
     nbonds(::System)
 
 Returns the number of bonds in the given atom container where at least one associated atom
