@@ -55,7 +55,13 @@ include("fileformats/ball_ini_file.jl")
 module PubChem
 include("fileformats/pubchem_json.jl")
 end
-include("fileformats/pdb.jl")
+
+module PDBDetails
+include("fileformats/pdb/pdb_defs.jl")
+include("fileformats/pdb/pdb_general.jl")
+end
+include("fileformats/pdb_old.jl")
+
 include("fileformats/sdfile.jl")
 
 # mappings
